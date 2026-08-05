@@ -13,9 +13,45 @@ kart = {
     "friction_coefficient": 1.4, # Value for Semi-Slicks
     "cw_area": 0.8, # Estimated value 
     "air_density": 1.225, # More accurate value then in the Doku
-    "rr_coefficient": 0.015, 
-    # "gear_ratio": 5.0, # Not reaseached yet 
-    # "primary_gear_ratio": 5.0, # Not reasearched yet
-    # "torque_curve": { # Not researched yet
-    # }
+    "rr_coefficient": 0.015,
+    "gear_ratios": {
+        "primary": 1.63066,
+        "secondary": 2.5,
+        "gears": [
+            {"gear": 1, "ratio": 2.61534},
+            {"gear": 2, "ratio": 2.05835},
+            {"gear": 3, "ratio": 1.72231},
+            {"gear": 4, "ratio": 1.52332},
+            {"gear": 5, "ratio": 1.36330},
+            {"gear": 6, "ratio": 1.25839}
+        ]
+    },
+    "torque_curve": [
+        {"rpm": 2000, "torque": 42.0}, # Value in Nm asstimated by Ai based on a given few data points 
+        {"rpm": 2500, "torque": 48.0},
+        {"rpm": 3000, "torque": 57.0},
+        {"rpm": 3500, "torque": 61.0},
+        {"rpm": 4000, "torque": 66.0},
+        {"rpm": 4500, "torque": 69.0},
+        {"rpm": 5000, "torque": 71.0},
+        {"rpm": 5500, "torque": 73.0},
+        {"rpm": 6000, "torque": 76.0},
+        {"rpm": 6500, "torque": 79.0},
+        {"rpm": 7000, "torque": 83.0},
+        {"rpm": 7500, "torque": 88.0},
+        {"rpm": 8000, "torque": 96.0},
+        {"rpm": 8500, "torque": 100.0},
+        {"rpm": 9000, "torque": 104.0},
+        {"rpm": 9500, "torque": 107.0},
+        {"rpm": 10000, "torque": 109.0},
+        {"rpm": 10500, "torque": 111.0},
+        {"rpm": 11000, "torque": 112.0},
+        {"rpm": 11500, "torque": 112.5},
+        {"rpm": 12000, "torque": 112.8},
+        {"rpm": 12500, "torque": 113.0},
+        {"rpm": 13000, "torque": 111.5},
+        {"rpm": 13500, "torque": 109.5},
+        {"rpm": 14000, "torque": 108.0},
+        {"rpm": 14500, "torque": 106.9}
+    ]
 }

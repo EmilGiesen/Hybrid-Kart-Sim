@@ -49,8 +49,12 @@ while velocity < goal_velocity:
     time = t_new
     velocity = v_new
     position = x_new
+    times.append(time)
+    velocities.append(velocity)
     
     
 print (time)
 print(velocity)
+print(times)
+print(velocities)
     
