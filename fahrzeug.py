@@ -3,6 +3,8 @@ kart = {
     "driver_weight": 80, # Value 5kg lighter than in the Doku, because I weigh 75kg + 5kg Equipment
     "fluid_weight": 12, # Value in kg
     "driving_weight": 349, # Value in kg
+    "axel_weight_rear": 0.6, # Value in percent
+    "axel_weight_front": 0.4, # Value in percent
     "combustion_output": 160, # Value in kW
     "max_rpm": 14500, 
     "electric_output": 60, # Peak power of the electric motor in kW
