@@ -14,7 +14,7 @@ kart = {
     "cw_area": 0.8, # Estimated value 
     "air_density": 1.225, # More accurate value then in the Doku
     "rr_coefficient": 0.015,
-    "gear_ratios": {
+    "gear_ratios": { # Based on the 2024 version
         "primary": 1.63066,
         "secondary": 2.5,
         "gears": [
