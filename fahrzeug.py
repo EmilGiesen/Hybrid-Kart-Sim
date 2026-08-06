@@ -8,8 +8,10 @@ kart = {
     "combustion_output": 160, # Value in kW
     "max_rpm": 14500, 
     "electric_output": 60, # Peak power of the electric motor in kW
+    "electric_torque": 190, # Peak torque from electric motor
     "battery_capacity": 1.0, # Value in kWh
     "rear_wheel_radius": 0.266, # Value in Meter, 225/45 R13
+    "front_wheel_radius": 0.2635, # Value in Meter, 195/50 R13
     "friction_coefficient": 1.4, # Value for Semi-Slicks
     "cw_area": 0.8, # Estimated value 
     "air_density": 1.225, # More accurate value then in the Doku
