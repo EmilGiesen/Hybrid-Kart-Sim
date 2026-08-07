@@ -16,6 +16,8 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     rear_wheel_radius = kart["rear_wheel_radius"]
     front_wheel_radius = kart["front_wheel_radius"]
     electric_torque = kart["electric_torque"]
+    electric_output = kart["electric_output"]
+    battery_capacity = kart["battery_capacity"]
 
     primary_gear_ratio = gearbox["primary"]
     secondary_gear_ratio = gearbox["secondary"]
@@ -35,18 +37,21 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     dt = 0.0001
     power_cut = 15
     current_gear = 0
+    battery_level = battery_capacity * 3600000
     times = []
     velocities = []
-    added_energy = []
-    lost_energy = []
+    added_energy_combustion = []
+    lost_energy_combustion = []
+    current_capacities = []
 
         
     accelerating = velocity < goal_velocity
     
 
-    while (velocity < goal_velocity) if accelerating else (velocity > goal_velocity):
+    while time < 100: # (velocity < goal_velocity) if accelerating else (velocity > goal_velocity):
         set_rpm = 2000
         F_front = 0
+        current_capacity = battery_level / 3600000
         v_old = v_new
         t_old = t_new
         x_old = x_new
@@ -76,20 +81,20 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
         if power_cut != 15:
             current_torque = 0
             power_cut = power_cut + 1
-            F_front = electric_torque / front_wheel_radius
-            F_front = min([F_front, F_traction_max_front])
+            if battery_capacity*0.2 < current_capacity:
+                F_front = electric_torque / front_wheel_radius
+                F_front = min([F_front, F_traction_max_front])
             
         F_rear = current_torque * total_ratio / rear_wheel_radius
         F_rear = min([F_rear, F_traction_max_rear])
         
-        if mode == 1: # Full Electric power
+        if mode == 1 and battery_capacity*0.2 < current_capacity: # Full Electric power
             F_front = electric_torque / front_wheel_radius
             F_front = min([F_front, F_traction_max_front])
             
-        if mode == 2: # Hybrid Electric power only if rpm under 9k
-            if current_torque < 105:
-                F_front = electric_torque / front_wheel_radius
-                F_front = min([F_front, F_traction_max_front])
+        if mode == 2 and battery_capacity*0.2 < current_capacity and current_torque < 105: # Hybrid Electric power only if rpm under 9
+            F_front = electric_torque / front_wheel_radius
+            F_front = min([F_front, F_traction_max_front])
                 
         if mode == 3: # Combustion only
             vroom = "vroom"
@@ -109,7 +114,8 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
             power_cut = 0
         else:
             power_cut = 15
-        
+         
+         
         current_gear = new_gear
         v_new = v_old + a * dt
         t_new = t_old + dt
@@ -120,19 +126,26 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
         position = x_new
         times.append(time)
         velocities.append(velocity)
-        added_energy.append(F_combined * v_old * dt)
-        lost_energy.append((F_drag + F_roll) * v_old * dt)
+        added_energy_combustion.append(F_combined * v_old * dt)
+        lost_energy_combustion.append((F_drag + F_roll) * v_old * dt)
+        current_capacities.append(current_capacity)
         
+        if mode == 1 or mode == 2:   
+            produced_energy = F_front * (x_new - x_old)
+            used_energy = produced_energy / 0.88
+    
+            battery_level = battery_level - used_energy        
+            
         if velocity == 0:
             break
         if v_new == v_old:
             break
 
-    return time, velocity, times, velocities, engine_rpm, current_torque, added_energy, lost_energy, current_gear
+    return time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities
 
 
 if __name__ == "__main__":
-    time, velocity, times, velocities, engine_rpm, current_torque, added_energy, lost_energy, current_gear = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/3.6, total_ratio = None, mode = 2)
+    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/3.6, total_ratio = None, mode = 2)
 
     print(time)
     print(velocity)
@@ -142,4 +155,10 @@ if __name__ == "__main__":
     plt.xlabel("Zeit [s]")
     plt.ylabel("Geschwindigkeit [m/s]")
     plt.title("Geradeausbeschleunigung 0-100 km/h")
+    plt.show()
+    
+    plt.plot(times, current_capacities)
+    plt.xlabel("Zeit [s]")
+    plt.ylabel("Akkukapazizäz [kwH]")
+    plt.title("Akku Test")
     plt.show()
