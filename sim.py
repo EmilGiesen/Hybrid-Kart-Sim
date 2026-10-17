@@ -4,7 +4,30 @@ import fahrzeug
 from fahrzeug import kart
 
 
-def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/3.6, total_ratio = None, mode = 2):
+def sim_breaking(kart, velocity, mode, F_traction_max_front, F_traction_max_rear,  x_new, v_new, dt, battery_level, current_capacity):
+    electric_torque = kart["electric_torque"]
+    battery_capacity = kart["battery_capacity"]
+    rear_wheel_radius = kart["rear_wheel_radius"]
+    front_wheel_radius = kart["front_wheel_radius"]
+    
+    F_regen = 0
+    
+    if current_capacity < battery_capacity and mode != 3: 
+        T_regen_max = electric_torque
+        F_regen = min(T_regen_max / front_wheel_radius, 50 * battery_capacity)
+        F_regen = min(F_regen, F_traction_max_front)
+    
+        energy_regen = F_regen * (x_new - x_new + v_new * dt)
+        total_regen = min(energy_regen * 0.1, 5 * battery_capacity)
+        battery_level = battery_level + total_regen
+        
+    F_mech_max = F_traction_max_rear + (F_traction_max_front - F_regen)
+    F_combined = 0 - F_mech_max
+    
+    return battery_level, F_combined
+
+
+def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True):
     driving_weight = kart["driving_weight"]
     cw_area = kart["cw_area"]
     axel_weight_rear = kart["axel_weight_rear"]
@@ -28,7 +51,7 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     rpm_value = [punkt["rpm"] for punkt in kart["torque_curve"]]
     torque_value = [punkt["torque"] for punkt in kart["torque_curve"]]
 
-    v_new = 0.0
+    v_new = 100.0
     t_new = 0.0
     x_new = 0.0
 
@@ -37,7 +60,13 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     dt = 0.0001
     power_cut = 15
     current_gear = 0
-    battery_level = battery_capacity * 3600000
+    battery_level = battery_capacity * 3600000 * 0.5
+    N_rear = driving_weight * 9.81 * axel_weight_rear
+    N_front = driving_weight * 9.81 * axel_weight_front
+    F_roll = rr_coefficent * driving_weight * 9.81
+    F_traction_max_rear = traction_coefficient * N_rear
+    F_traction_max_front = traction_coefficient * N_front
+    rear_wheel_size = 2 * np.pi * rear_wheel_radius
     times = []
     velocities = []
     added_energy_combustion = []
@@ -48,7 +77,7 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     accelerating = velocity < goal_velocity
     
 
-    while time < 100: # (velocity < goal_velocity) if accelerating else (velocity > goal_velocity):
+    while  (velocity < goal_velocity) if accelerating else (velocity > goal_velocity):
         set_rpm = 2000
         F_front = 0
         current_capacity = battery_level / 3600000
@@ -56,8 +85,6 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
         t_old = t_new
         x_old = x_new
         new_gear = current_gear
-        N_rear = driving_weight * 9.81 * axel_weight_rear
-        N_front = driving_weight * 9.81 * axel_weight_front
             
         if total_ratio == 0:
             total_ratio = 0
@@ -65,11 +92,7 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
             total_ratio = primary_gear_ratio * gear_ratios[current_gear]["ratio"] * secondary_gear_ratio
 
         F_drag = 0.5 * air_density * cw_area * velocity ** 2
-        F_roll = rr_coefficent * driving_weight * 9.81
-        F_traction_max_rear = traction_coefficient * N_rear
-        F_traction_max_front = traction_coefficient * N_front
 
-        rear_wheel_size = 2 * np.pi * rear_wheel_radius
         rear_wheel_rotations = velocity / rear_wheel_size * 60
         calculated_rpm = rear_wheel_rotations * total_ratio
 
@@ -101,7 +124,15 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
             F_front = 0
                 
         F_combined = F_rear + F_front
-        F_total = F_rear + F_front - F_drag - F_roll
+        
+        if breaking == True:
+            
+            battery_level, F_combined = sim_breaking(kart, velocity, mode, F_traction_max_front, F_traction_max_rear,  x_new, v_new, dt, battery_level, current_capacity)
+            F_combined = F_combined
+            
+        
+        
+        F_total = F_combined - F_drag - F_roll
         a = F_total / driving_weight
         
         if engine_rpm > 14450:
@@ -136,7 +167,7 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
     
             battery_level = battery_level - used_energy        
             
-        if velocity == 0:
+        if velocity < 0:
             break
         if v_new == v_old:
             break
@@ -145,7 +176,7 @@ def sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/
 
 
 if __name__ == "__main__":
-    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=150/3.6, total_ratio = None, mode = 2)
+    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True)
 
     print(time)
     print(velocity)
