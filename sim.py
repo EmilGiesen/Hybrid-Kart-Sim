@@ -30,11 +30,11 @@ def sim_breaking(kart, velocity, mode, F_traction_max_front, F_traction_max_rear
 def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True):
     driving_weight = kart["driving_weight"]
     cw_area = kart["cw_area"]
-    axel_weight_rear = kart["axel_weight_rear"]
-    axel_weight_front = kart["axel_weight_front"]
+    axle_weight_rear = kart["axle_weight_rear"]
+    axle_weight_front = kart["axle_weight_front"]
     air_density = kart["air_density"]
     traction_coefficient = kart["friction_coefficient"]
-    rr_coefficent = kart["rr_coefficient"]
+    rr_coefficient = kart["rr_coefficient"]
     gearbox = kart["gear_ratios"]
     rear_wheel_radius = kart["rear_wheel_radius"]
     front_wheel_radius = kart["front_wheel_radius"]
@@ -51,7 +51,7 @@ def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/
     rpm_value = [punkt["rpm"] for punkt in kart["torque_curve"]]
     torque_value = [punkt["torque"] for punkt in kart["torque_curve"]]
 
-    v_new = 100.0
+    v_new = velocity
     t_new = 0.0
     x_new = 0.0
 
@@ -61,9 +61,9 @@ def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/
     power_cut = 15
     current_gear = 0
     battery_level = battery_capacity * 3600000 * 0.5
-    N_rear = driving_weight * 9.81 * axel_weight_rear
-    N_front = driving_weight * 9.81 * axel_weight_front
-    F_roll = rr_coefficent * driving_weight * 9.81
+    N_rear = driving_weight * 9.81 * axle_weight_rear
+    N_front = driving_weight * 9.81 * axle_weight_front
+    F_roll = rr_coefficient * driving_weight * 9.81
     F_traction_max_rear = traction_coefficient * N_rear
     F_traction_max_front = traction_coefficient * N_front
     rear_wheel_size = 2 * np.pi * rear_wheel_radius
@@ -176,7 +176,7 @@ def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/
 
 
 if __name__ == "__main__":
-    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True)
+    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True)
 
     print(time)
     print(velocity)

@@ -5,10 +5,10 @@ import fahrzeug
 driving_weight = fahrzeug.kart["driving_weight"]
 combustion_output = fahrzeug.kart["combustion_output"]
 cw_area = fahrzeug.kart["cw_area"]
-axel_weight_rear = fahrzeug.kart["axel_weight_rear"]
+axle_weight_rear = fahrzeug.kart["axle_weight_rear"]
 air_density = fahrzeug.kart["air_density"]
 traction_coefficient = fahrzeug.kart["friction_coefficient"]
-rr_coefficent = fahrzeug.kart["rr_coefficient"]
+rr_coefficient = fahrzeug.kart["rr_coefficient"]
 torque_curve = fahrzeug.kart["torque_curve"]
 gearbox = fahrzeug.kart["gear_ratios"]
 
@@ -33,7 +33,7 @@ v_new = 0.0
 t_new = 0.0
 x_new = 0.0
 
-total_ratio = primary_gear_ratio * gear_1_ratio * secondary_gear_ratio # Hard coded gear until Smart transimison 
+total_ratio = primary_gear_ratio * gear_1_ratio * secondary_gear_ratio # Hard coded gear until Smart transmission 
 
 time = 0.0
 velocity = 0.0
@@ -50,17 +50,17 @@ while velocity < goal_velocity:
     v_old = v_new 
     t_old = t_new
     x_old = x_new
-    N = driving_weight * 9.81 * axel_weight_rear
+    N = driving_weight * 9.81 * axle_weight_rear
 
     F_drag = 0.5 * air_density * cw_area * velocity**2
-    F_roll = rr_coefficent * driving_weight * 9.81
+    F_roll = rr_coefficient * driving_weight * 9.81
     F_traction_max = traction_coefficient * N
      
     rear_wheel_size = 2 * np.pi * rear_wheel_radius
     
     rear_wheel_rotations = velocity/ rear_wheel_size * 60
     
-    calculated_rpm = rear_wheel_rotations * total_ratio # Hard coded gear until Smart transimison 
+    calculated_rpm = rear_wheel_rotations * total_ratio # Hard coded gear until Smart transmission 
     
     engine_rpm = max([set_rpm, calculated_rpm])
     
