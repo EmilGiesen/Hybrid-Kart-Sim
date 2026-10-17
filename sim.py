@@ -176,7 +176,7 @@ def sim_acceleration(kart, velocity=100.0, current_torque=2000, goal_velocity=0/
 
 
 if __name__ == "__main__":
-    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=0/3.6, total_ratio = None, mode = 2, breaking = True)
+    time, velocity, times, velocities, engine_rpm, current_torque, added_energy_combustion, lost_energy_combustion, current_gear, current_capacities = sim_acceleration(kart, velocity=0.0, current_torque=2000, goal_velocity=100/3.6, total_ratio = None, mode = 2, breaking = False)
 
     print(time)
     print(velocity)
@@ -190,6 +190,6 @@ if __name__ == "__main__":
     
     plt.plot(times, current_capacities)
     plt.xlabel("Zeit [s]")
-    plt.ylabel("Akkukapazizäz [kwH]")
+    plt.ylabel("Akkukapazität [kWh]")
     plt.title("Akku Test")
     plt.show()
