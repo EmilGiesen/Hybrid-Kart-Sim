@@ -1,7 +1,8 @@
-# HybridKart
+# Hybrid-Kart-Sim
 
 Eine Python-Simulation der Längsdynamik eines Hybrid-Karts mit Verbrennungsmotor an der Hinterachse und Elektromotor an der Vorderachse.
 
+![Ergebnisse der Simulation](docs/ergebnisse.png)
 ## Ziel
 
 Mein Ziel war es, ein mögliches Hyperkart mit möglichst physikalisch realistischen Werten zu simulieren. Die Simulation soll zeigen, wie schnell es beschleunigt, wie es bremst und wie sich dabei der Akku entlädt und wieder auflädt. Dafür habe ich Schritt für Schritt ein eigenes Simulationsmodell aufgebaut.
@@ -31,7 +32,7 @@ Die Logik dieses Projekts stammt größtenteils von mir selbst. KI habe ich nur 
 
 ## Hinweis zu den Fahrzeugdaten
 
-Mehrere Werte in [fahrzeug.py](fahrzeug.py), zum Beispiel die Drehmomentkurve, wurden mithilfe von KI geschätzt. Die Ergebnisse sind deshalb kaum wirklich genau. Die Berechnungen selbst stimmen aber. Für eine realistischere Simulation kann man die Fahrzeugwerte in [fahrzeug.py](fahrzeug.py) jederzeit durch echte Daten ersetzen.
+Mehrere Werte in [fahrzeug.py](fahrzeug.py), zum Beispiel die Drehmomentkurve, wurden mithilfe von KI geschätzt. Die Ergebnisse sind deshalb Näherungen. Die Berechnungen selbst stimmen aber werden durch Tests (Energiebilanz, Grenzfälle) abgesichert. Für eine realistischere Simulation kann man die Fahrzeugwerte in [fahrzeug.py](fahrzeug.py) jederzeit durch echte Daten ersetzen.
 
 ## Status
 
